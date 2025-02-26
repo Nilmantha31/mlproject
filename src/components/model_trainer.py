@@ -36,17 +36,53 @@ class ModelTrainer:
                 test_array[:,-1]
             )
 
-            models = [
-                RandomForestRegressor,
-                DecisionTreeRegressor,
-                GradientBoostingRegressor,
-                LinearRegression,
-                KNeighborsRegressor,
-                XGBRegressor,
-                AdaBoostRegressor
-            ]
+            models = {
+                "RandomForest": RandomForestRegressor(),
+                "DecisionTree": DecisionTreeRegressor(),
+                "GradientBoosting": GradientBoostingRegressor(),
+                "LinearRegression": LinearRegression(),
+                "KNeighbors": KNeighborsRegressor(),
+                "XGBoost": XGBRegressor(),
+                "AdaBoost": AdaBoostRegressor()
+            }
 
-            model_report,_ = evaluate_models(x_train,y_train,x_test,y_test, model=models)
+            params = {
+                'DecisionTree':{
+                    'criterion':['squared_error', 'absolute_error', 'friedman_mse','poisson'],
+                    'splitter':['best', 'random'],
+                    'max_features': ['sqrt','log2']
+                },
+                'RandomForest':{
+                    'criterion':['squared_error', 'absolute_error', 'friedman_mse','poisson'],
+                    'max_features': ['sqrt','log2', None],
+                    'n_estimators':[8,16,32,64,100,128,256]
+                },
+                'GradientBoosting':{
+                    'loss':['squared_error','absolute_error','huber','quantile'],
+                    'learning_rate':[0.1,0.01,0.05,0.001],
+                    'subsample':[0.6,0.7,0.75,0.8,0.85,0.9],
+                    'criterion':['squared_error', 'friedman_mse'],
+                    'max_features':['auto','sqrt', 'log2'],
+                    'n_estimators':[8,16,32,64,100,128,256]
+                },
+                'LinearRegression':{},
+                'KNeighbors':{
+                    'n_neighbors':[5,7,9,11],
+                    'weights':['uniform','distance'],
+                    'algorithm':['ball_tree','kd_tree','brute']
+                },
+                'XGBoost':{
+                    'n_estimators':[8,16,32,64,100,128,256],
+                    'learning_rate':[0.1,0.01,0.05,0.001]
+                },
+                'AdaBoost':{
+                    'n_estimators':[8,16,32,64,100,128,256],
+                    'learning_rate':[0.1,0.01,0.05,0.001],
+                    'loss':['linear','square','exponential']
+                }
+            }
+
+            model_report,_ = evaluate_models(x_train,y_train,x_test,y_test,models,params)
 
             best_model_score = max(sorted(model_report.values()))
 
@@ -63,9 +99,9 @@ class ModelTrainer:
             save_object(self.model_trainer_config.trained_model_file_path,obj=best_model)
 
             predicted = best_model.predict(x_test)
-            r2_score = r2_score(y_test,predicted)
+            r2score = r2_score(y_test,predicted)
 
-            return r2_score
+            return r2score
 
 
         except Exception as e:

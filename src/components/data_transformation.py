@@ -12,7 +12,6 @@ from sklearn.preprocessing import OneHotEncoder,StandardScaler
 from src.exception import CustomException
 from src.logger import logging
 from src.util import save_object
-from src.components.model_trainer import ModelTrainerConfig, ModelTrainer
 
 @dataclass
 class DataTransformationConfig:
@@ -43,9 +42,8 @@ class DataTransformation:
 
             cat_pipeline = Pipeline(
                 steps=[
-                    ('imputer', SimpleImputer(strategy='most_frequesnt')),
-                    ('one_hot_encoder', OneHotEncoder()),
-                    ('scaler', StandardScaler())
+                    ('imputer', SimpleImputer(strategy='most_frequent')),
+                    ('one_hot_encoder', OneHotEncoder())
                 ]
             )
 
@@ -110,13 +108,3 @@ class DataTransformation:
             )
         except Exception as e:
             raise CustomException(e, sys)
-
-if __name__ == '__main__':
-    obj = DataIngestion()
-    train_data, test_data = obj.initiate_data_ingestion()
-
-    data_transformation = DataTransformation()
-    train_arr, test_arr = data_transformation.initiate_data_transformation(train_data, test_data)
-
-    model_traine = ModelTrainer()
-    model_traine.initiate_model_trainer(train_arr, test_arr)
