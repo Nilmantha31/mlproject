@@ -26,23 +26,30 @@ def evaluate_models(x_train,y_train,x_test,y_test,models,params):
         train_report = {}
 
         for name, model in models.items():
-            param_grid = params.get(name, {}) 
-            if param_grid:
-                gs = GridSearchCV(model,param_grid, cv=5)
+            if name in params and params[name]:
+                gs = GridSearchCV(model,param_grid=params[name], cv=5,error_score='raise')
                 gs.fit(x_train,y_train)
+                
+                model.set_params(**gs.best_params_)
+                model.fit(x_train,y_train)
 
-            model.set_params(**gs.best_params_)
-            model.fit(x_train,y_train)
+                y_train_pred = model.predict(x_train)
+                y_test_pred = model.predict(x_test)
 
-            y_train_pred = model.predict(x_train)
-            y_test_pred = model.predict(x_test)
+                train_model_score = r2_score(y_true=y_train,y_pred=y_train_pred)
+                test_model_score = r2_score(y_true=y_test, y_pred=y_test_pred)
 
-            train_model_score = r2_score(y_true=y_train,y_pred=y_train_pred)
-            test_model_score = r2_score(y_true=y_test, y_pred=y_test_pred)
-
-            test_report[name]=test_model_score
-            train_report[name]=train_model_score
+                test_report[name]=test_model_score
+                train_report[name]=train_model_score
 
         return test_report,train_report
     except Exception as e:
         raise CustomException(e,sys)
+    
+def load_object(file_path):
+    try:
+        with open(file_path, 'rb') as file_obj:
+            return dill.load(file_obj)
+        
+    except Exception as e:
+        raise CustomException(e, sys)

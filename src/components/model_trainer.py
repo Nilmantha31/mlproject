@@ -48,28 +48,32 @@ class ModelTrainer:
 
             params = {
                 'DecisionTree':{
-                    'criterion':['squared_error', 'absolute_error', 'friedman_mse','poisson'],
-                    'splitter':['best', 'random'],
-                    'max_features': ['sqrt','log2']
+                    'criterion':['squared_error', 'absolute_error', 'friedman_mse','poisson']
+                    # 'splitter':['best', 'random'],
+                    # 'max_features': ['sqrt','log2']
                 },
                 'RandomForest':{
-                    'criterion':['squared_error', 'absolute_error', 'friedman_mse','poisson'],
-                    'max_features': ['sqrt','log2', None],
+                    # 'criterion':['squared_error', 'absolute_error', 'friedman_mse','poisson'],
+                    # 'max_features': ['sqrt','log2', None],
                     'n_estimators':[8,16,32,64,100,128,256]
                 },
                 'GradientBoosting':{
-                    'loss':['squared_error','absolute_error','huber','quantile'],
+                    # 'loss':['squared_error','absolute_error','huber','quantile'],
                     'learning_rate':[0.1,0.01,0.05,0.001],
                     'subsample':[0.6,0.7,0.75,0.8,0.85,0.9],
-                    'criterion':['squared_error', 'friedman_mse'],
-                    'max_features':['auto','sqrt', 'log2'],
+                    # 'criterion':['squared_error', 'friedman_mse'],
+                    # 'max_features':['sqrt', 'log2', None],
                     'n_estimators':[8,16,32,64,100,128,256]
                 },
-                'LinearRegression':{},
+                'LinearRegression':{
+                    'fit_intercept': [True, False],
+                    'copy_X': [True, False],
+                    'positive': [True, False]
+                },
                 'KNeighbors':{
-                    'n_neighbors':[5,7,9,11],
-                    'weights':['uniform','distance'],
-                    'algorithm':['ball_tree','kd_tree','brute']
+                    'n_neighbors':[5,7,9,11]
+                    # 'weights':['uniform','distance'],
+                    # 'algorithm':['ball_tree','kd_tree','brute']
                 },
                 'XGBoost':{
                     'n_estimators':[8,16,32,64,100,128,256],
@@ -77,8 +81,8 @@ class ModelTrainer:
                 },
                 'AdaBoost':{
                     'n_estimators':[8,16,32,64,100,128,256],
-                    'learning_rate':[0.1,0.01,0.05,0.001],
-                    'loss':['linear','square','exponential']
+                    'learning_rate':[0.1,0.01,0.05,0.001]
+                    # 'loss':['linear','square','exponential']
                 }
             }
 
